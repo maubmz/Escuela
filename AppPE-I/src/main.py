@@ -1,6 +1,4 @@
-from src.Vetana import Ventana
+from src.interfaz.Vetana import main
 
-aplicacion = Ventana()        # Crear la instancia de Ventana
-aplicacion.ventana_inicio()   # Configurar la ventana
-aplicacion.menu_ventana()     # Configurar el menú
-aplicacion.iniciar_aplicacion() # Iniciar la aplicación (mainloop)
+if __name__ == "__main__":
+    main()
