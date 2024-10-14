@@ -1,6 +1,5 @@
 import customtkinter as ctk
 
-
 class InterfazApp:
     def __init__(self, root):
         self.root = root
@@ -19,6 +18,10 @@ class InterfazApp:
         # Crear el campo de entrada (entry) para la ApiKey
         self.entrada_superior = ctk.CTkEntry(panel_superior, width=800, font=("Arial", 16))
         self.entrada_superior.pack(side="left", padx=10, pady=10, fill="x", expand=True)
+
+        # Asociar la tecla "Enter" y "Shift+Enter" al campo ApiKey para capturar el texto
+        self.entrada_superior.bind("<Return>", self.procesar_apikey)
+        self.entrada_superior.bind("<Shift-Return>", self.procesar_apikey)
 
         # Crear los botones
         self.boton_markdown = ctk.CTkButton(panel_superior, text="Markdown", width=100, height=40, corner_radius=10,
@@ -44,6 +47,14 @@ class InterfazApp:
                                                                                            "Análisis de clase"))
         self.boton_analisis_clase.pack(side="left", padx=10, pady=10, fill="x", expand=True)
 
+        # Crear un panel central
+        panel_central = ctk.CTkFrame(self.root, fg_color="gray")
+        panel_central.pack(side="top", fill="both", expand=True)  # Expande para llenar el espacio disponible
+
+        # Importar ScrollableFrame de customtkinter
+        self.scrollable_frame_central = ctk.CTkScrollableFrame(panel_central, width=800, height=600)
+        self.scrollable_frame_central.pack(side="top", fill="both", expand=True)
+
         # Crear un panel inferior
         panel_inferior = ctk.CTkFrame(self.root, fg_color="black")
         panel_inferior.pack(side="bottom", fill="x")
@@ -54,12 +65,27 @@ class InterfazApp:
         self.entrada_inferior.pack(side="left", padx=10, pady=10, fill="x", expand=True)
 
         # Asociar la tecla "Enter" al campo de entrada para que también envíe el texto
-        self.entrada_inferior.bind("<Return>", lambda event: self.mostrar_texto())
+        self.entrada_inferior.bind("<Return>", self.procesar_texto_usuario)
 
-    # Función para capturar el texto
-    def mostrar_texto(self):
-        texto = self.entrada_inferior.get("1.0", "end-1c")  # Captura todo el texto desde la primera línea
-        print(f"Texto ingresado: {texto}")
+    # Función para capturar el texto solo cuando se presiona Enter (sin Shift)
+    def procesar_texto_usuario(self, event):
+        # Verificar si se presionó la tecla "Enter"
+        if event.keysym == "Return":
+            if event.state & 0x0001:  # Si se presionó Shift+Enter
+                return  # No hacer nada, solo permite el salto de línea
+            else:  # Si solo se presionó Enter
+                texto = self.entrada_inferior.get("1.0", "end-1c")  # Captura todo el texto desde la primera línea
+                print(f"Texto ingresado: {texto}")
+                self.entrada_inferior.delete("1.0", "end")  # Limpiar el campo de texto
+                return "break"  # Evita el salto de línea con Enter solo
+
+    # Función para procesar el texto ingresado en ApiKey
+    def procesar_apikey(self, event):
+        # Captura el texto cuando se presiona Enter o Shift+Enter
+        apikey_texto = self.entrada_superior.get()  # Obtener el texto de ApiKey
+        print(f"ApiKey ingresada: {apikey_texto}")
+        # Evitar la acción predeterminada de salto de línea en el campo ApiKey
+        return "break"
 
     # Función para cambiar el color del botón y mostrar el mensaje
     def toggle_button_color(self, button, nombre_opcion):
@@ -73,18 +99,21 @@ class InterfazApp:
 
         button.configure(fg_color=new_color)  # Actualiza el color del botón
 
-    # Funciones que se ejecutarán cuando se seleccionen las opciones (ya no son necesarias)
-    def opcion_markdown(self):
-        pass
+    # Método para imprimir mensajes en el panel central
+    def imprimir_mensaje_panel_central(self, mensaje):
+        nuevo_mensaje = ctk.CTkLabel(self.scrollable_frame_central, text=mensaje, font=("Arial", 14), anchor="w")
+        nuevo_mensaje.pack(side="top", fill="x", padx=10, pady=5)
 
-    def opcion_comentar_codigo(self):
-        pass
-
-    def opcion_buenas_practicas(self):
-        pass
-
-    def opcion_analisis_clase(self):
-        pass
+    # Modificar la función procesar_texto_usuario para usar este método
+    def procesar_texto_usuario(self, event):
+        if event.keysym == "Return":
+            if event.state & 0x0001:  # Si se presionó Shift+Enter
+                return  # No hacer nada, solo permite el salto de línea
+            else:  # Si solo se presionó Enter
+                texto = self.entrada_inferior.get("1.0", "end-1c")  # Captura todo el texto desde la primera línea
+                self.imprimir_mensaje_panel_central(f"Usuario: {texto}")  # Imprime el mensaje en el panel central
+                self.entrada_inferior.delete("1.0", "end")  # Limpiar el campo de texto
+                return "break"  # Evita el salto de línea con Enter solo
 
 
 # Clase Main que crea la ventana y ejecuta la interfaz
