@@ -99,9 +99,22 @@ class InterfazApp:
 
         button.configure(fg_color=new_color)  # Actualiza el color del botón
 
-    # Método para imprimir mensajes en el panel central
-    def imprimir_mensaje_panel_central(self, mensaje):
-        nuevo_mensaje = ctk.CTkLabel(self.scrollable_frame_central, text=mensaje, font=("Arial", 14), anchor="w")
+    # Método para imprimir mensajes en el panel central con el rol del mensaje
+    def imprimir_mensaje_panel_central(self, mensaje, rol):
+        if rol == "usuario":
+            prefijo = "Usuario: "
+            color = "gray"  # Elige un color para el mensaje del usuario
+            anchor = "e"  # Alinear el texto a la derecha
+        elif rol == "sistema":
+            prefijo = "Sistema: "
+            color = "white"  # Elige un color para el mensaje del sistema
+            anchor = "w"  # Alinear el texto a la izquierda
+
+        # Crear el nuevo mensaje con el prefijo correspondiente
+        nuevo_mensaje = ctk.CTkLabel(self.scrollable_frame_central, text=prefijo + mensaje,
+                                     font=("Arial", 14), anchor=anchor, text_color=color)
+
+        # Empaquetar los mensajes uno debajo del otro (verticalmente) con alineación
         nuevo_mensaje.pack(side="top", fill="x", padx=10, pady=5)
 
     # Modificar la función procesar_texto_usuario para usar este método
@@ -111,7 +124,7 @@ class InterfazApp:
                 return  # No hacer nada, solo permite el salto de línea
             else:  # Si solo se presionó Enter
                 texto = self.entrada_inferior.get("1.0", "end-1c")  # Captura todo el texto desde la primera línea
-                self.imprimir_mensaje_panel_central(f"Usuario: {texto}")  # Imprime el mensaje en el panel central
+                self.imprimir_mensaje_panel_central(texto, "usuario")  # Imprime el mensaje con el rol "usuario"
                 self.entrada_inferior.delete("1.0", "end")  # Limpiar el campo de texto
                 return "break"  # Evita el salto de línea con Enter solo
 
