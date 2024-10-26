@@ -1,0 +1,80 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+/* Estilo del encabezado principal */
+h1 {
+    font-size: 2.5em;
+    color: #1e90ff;
+    margin-bottom: 10px;
+}
+
+/* Estilo del párrafo */
+p {
+    font-size: 1.2em;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* Estilo del enlace a Github */
+a {
+    font-size: 1.2em;
+    color: #1e90ff;
+    text-decoration: none;
+    margin: 10px 0;
+    padding: 8px 15px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    transition: color 0.3s, background-color 0.3s, border 0.3s;
+}
+
+/* Hover para el enlace de Github */
+a:hover {
+    color: #fff;
+    background-color: #1e90ff;
+    border: 2px solid #1e90ff;
+}
+
+/* Estilos para la barra de navegación */
+nav {
+    margin-top: 20px;
+}
+
+nav a {
+    font-size: 1.2em;
+    color: #1e90ff;
+    text-decoration: none;
+    margin: 0 15px;
+    padding: 8px 15px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    transition: color 0.3s, background-color 0.3s, border 0.3s;
+}
+
+/* Hover para los enlaces de navegación */
+nav a:hover {
+    color: #fff;
+    background-color: #1e90ff;
+    border: 2px solid #1e90ff;
+}
+
+/* Responsividad */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    p, nav a, a {
+        font-size: 1em;
+    }
+}
