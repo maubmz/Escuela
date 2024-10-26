@@ -1,0 +1,15 @@
+body {
+    background-color: lightyellow; /* Color de fondo amarillo claro */
+    font-family: Arial, sans-serif; /* Fuente de texto */
+    text-align: center; /* Centra el texto */
+}
+
+h1 {
+    color: orange; /* Color del título */
+}
+
+nav a {
+    margin: 15px; /* Margen entre los enlaces de navegación */
+    text-decoration: none; /* Sin subrayado en los enlaces */
+    color: orange; /* Color de los enlaces */
+}
