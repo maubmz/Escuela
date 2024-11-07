@@ -1,4 +1,6 @@
 import customtkinter as ctk
+from src.openAi.Metodo_OpenAI import mensaje_sistema_ayuda, MetodoOpenAI
+
 
 class InterfazApp:
     def __init__(self, root):
@@ -6,6 +8,8 @@ class InterfazApp:
         self.root.title("CodeWiseAI")
         self.root.geometry("1500x900")  # Tamaño inicial de la ventana
         self.root.config(bg="lightgray")  # Aseguramos que el fondo de la ventana es gris
+        self.boton_state = []
+        self.open_ai = None
 
         # Crear un panel superior
         panel_superior = ctk.CTkFrame(self.root, fg_color="black")
@@ -67,6 +71,7 @@ class InterfazApp:
         # Asociar la tecla "Enter" al campo de entrada para que también envíe el texto
         self.entrada_inferior.bind("<Return>", self.procesar_texto_usuario)
 
+
     # Función para capturar el texto solo cuando se presiona Enter (sin Shift)
     def procesar_texto_usuario(self, event):
         # Verificar si se presionó la tecla "Enter"
@@ -81,52 +86,95 @@ class InterfazApp:
 
     # Función para procesar el texto ingresado en ApiKey
     def procesar_apikey(self, event):
+
         # Captura el texto cuando se presiona Enter o Shift+Enter
-        apikey_texto = self.entrada_superior.get()  # Obtener el texto de ApiKey
-        print(f"ApiKey ingresada: {apikey_texto}")
+        apikey = self.entrada_superior.get()  # Obtener el texto de ApiKey
+        print(f"ApiKey ingresada: {apikey}")
+
+        # Llama al método para actualizar la API Key en Metodo_OpenAI
+        self.open_ai = MetodoOpenAI(apikey)
+
         # Evitar la acción predeterminada de salto de línea en el campo ApiKey
         return "break"
 
-    # Función para cambiar el color del botón y mostrar el mensaje
+    # Función para cambiar el color del botón y guardar texto del boton
     def toggle_button_color(self, button, nombre_opcion):
         current_color = button.cget("fg_color")  # Obtiene el color actual
         if current_color == "gray":
             new_color = "green"
-            print(f"{nombre_opcion} seleccionado")
+            # print(f"{nombre_opcion} seleccionado")
+            self.boton_state.append(nombre_opcion)
         else:
             new_color = "gray"
-            print(f"{nombre_opcion} deseleccionado")
+            # print(f"{nombre_opcion} deseleccionado")
+            self.boton_state.remove(nombre_opcion)
 
         button.configure(fg_color=new_color)  # Actualiza el color del botón
+        print(self.boton_state)
 
     # Método para imprimir mensajes en el panel central con el rol del mensaje
     def imprimir_mensaje_panel_central(self, mensaje, rol):
         if rol == "usuario":
-            prefijo = "Usuario: "
-            color = "gray"  # Elige un color para el mensaje del usuario
-            anchor = "e"  # Alinear el texto a la derecha
+            # prefijo = "Usuario: "
+            color_fondo = "#E0E0E0"  # Color de fondo para la burbuja del usuario
+            color_texto = "black"
         elif rol == "sistema":
-            prefijo = "Sistema: "
-            color = "white"  # Elige un color para el mensaje del sistema
-            anchor = "w"  # Alinear el texto a la izquierda
+            # prefijo = "Sistema: "
+            color_fondo = "#0078D4"  # Color de fondo para la burbuja del sistema
+            color_texto = "white"
 
-        # Crear el nuevo mensaje con el prefijo correspondiente
-        nuevo_mensaje = ctk.CTkLabel(self.scrollable_frame_central, text=prefijo + mensaje,
-                                     font=("Arial", 14), anchor=anchor, text_color=color)
+        # Crear un marco que actúe como la burbuja del mensaje
+        burbuja_frame = ctk.CTkFrame(self.scrollable_frame_central, fg_color=color_fondo)
 
-        # Empaquetar los mensajes uno debajo del otro (verticalmente) con alineación
-        nuevo_mensaje.pack(side="top", fill="x", padx=10, pady=5)
+        # Crear el mensaje dentro de la burbuja
+        mensaje_label = ctk.CTkLabel(burbuja_frame, text= mensaje,
+                                     font=("Arial", 14), text_color=color_texto, anchor="w")
 
-    # Modificar la función procesar_texto_usuario para usar este método
+        # Empaquetar el mensaje dentro del marco
+        mensaje_label.pack(padx=10, pady=5, fill="x")
+
+        # Empaquetar la burbuja en el panel central con alineación hacia la izquierda
+        burbuja_frame.pack(anchor="w", padx=10, pady=5, fill="x")
+
+    # Método para usar mensaje_sistema_ayuda
+    def generar_mensaje_ayuda(self, codigo_usuario):
+        mensaje = mensaje_sistema_ayuda(self.boton_state, codigo_usuario)
+        # Llamamos a OpenAI para generar la ayuda
+        respuesta = self.open_ai.metodo_openai(mensaje)
+
+        respuesta_text = respuesta.content
+        print(respuesta_text)
+
+        # En lugar de imprimir en la consola, usamos el método para mostrar en el panel central
+        self.imprimir_mensaje_panel_central(respuesta_text, "sistema")
+
     def procesar_texto_usuario(self, event):
         if event.keysym == "Return":
             if event.state & 0x0001:  # Si se presionó Shift+Enter
-                return  # No hacer nada, solo permite el salto de línea
+                return  # Permite el salto de línea
             else:  # Si solo se presionó Enter
-                texto = self.entrada_inferior.get("1.0", "end-1c")  # Captura todo el texto desde la primera línea
-                self.imprimir_mensaje_panel_central(texto, "usuario")  # Imprime el mensaje con el rol "usuario"
-                self.entrada_inferior.delete("1.0", "end")  # Limpiar el campo de texto
+                # Captura la ApiKey de entrada_superior
+                apikey = self.entrada_superior.get()
+
+                # Verifica si la ApiKey está vacía
+                if not apikey:
+                    print("Por favor, ingresa una ApiKey.")
+                    return "break"
+
+                # Actualiza self.open_ai con la ApiKey
+                self.open_ai = MetodoOpenAI(apikey)
+
+                # Captura el texto de entrada_inferior
+                texto = self.entrada_inferior.get("1.0", "end-1c")
+
+                # Imprime el mensaje en el panel central
+                self.imprimir_mensaje_panel_central(texto, "usuario")
+
+                # Limpia el campo de texto
+                self.entrada_inferior.delete("1.0", "end")
+
+                # Llama a generar_mensaje_ayuda con el texto
+                self.generar_mensaje_ayuda(texto)
+
                 return "break"  # Evita el salto de línea con Enter solo
-
-
 
