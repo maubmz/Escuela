@@ -115,26 +115,47 @@ class InterfazApp:
     # Método para imprimir mensajes en el panel central con el rol del mensaje
     def imprimir_mensaje_panel_central(self, mensaje, rol):
         if rol == "usuario":
-            # prefijo = "Usuario: "
             color_fondo = "#E0E0E0"  # Color de fondo para la burbuja del usuario
             color_texto = "black"
+            anchor_msg = "e"  # Alinea los mensajes del usuario a la derecha
+            justify_text = "left"  # Justifica el texto hacia la izquierda para que se vea alineado a la derecha
         elif rol == "sistema":
-            # prefijo = "Sistema: "
             color_fondo = "#0078D4"  # Color de fondo para la burbuja del sistema
             color_texto = "white"
+            anchor_msg = "w"  # Alinea los mensajes del sistema a la izquierda
+            justify_text = "left"  # Justifica el texto hacia la izquierda dentro de la burbuja
 
         # Crear un marco que actúe como la burbuja del mensaje
-        burbuja_frame = ctk.CTkFrame(self.scrollable_frame_central, fg_color=color_fondo)
+        burbuja_frame = ctk.CTkFrame(self.scrollable_frame_central, fg_color=color_fondo, corner_radius=15)
 
         # Crear el mensaje dentro de la burbuja
-        mensaje_label = ctk.CTkLabel(burbuja_frame, text= mensaje,
-                                     font=("Arial", 14), text_color=color_texto, anchor="w")
+        mensaje_label = ctk.CTkLabel(
+            burbuja_frame,
+            text=mensaje,
+            font=("Arial", 14),
+            text_color=color_texto,
+            anchor="w",  # Alinea el texto a la izquierda dentro de la burbuja
+            justify=justify_text,  # Justifica el texto dentro de la burbuja
+            wraplength=500  # Limita el ancho del texto para que la burbuja se ajuste dinámicamente
+        )
 
-        # Empaquetar el mensaje dentro del marco
-        mensaje_label.pack(padx=10, pady=5, fill="x")
+        # Empaquetar el mensaje dentro de la burbuja
+        mensaje_label.pack(padx=10, pady=5, fill="x", expand=True)
 
-        # Empaquetar la burbuja en el panel central con alineación hacia la izquierda
-        burbuja_frame.pack(anchor="w", padx=10, pady=5, fill="x")
+        # Crear el botón "copiar" solo si el rol es "sistema"
+        if rol == "sistema":
+            # Función para copiar el mensaje al portapapeles
+            def copiar_mensaje():
+                self.root.clipboard_clear()  # Limpiar el portapapeles
+                self.root.clipboard_append(mensaje)  # Copiar el mensaje
+                print(f"Mensaje copiado: {mensaje}")
+
+            # Crear el botón "copiar"
+            boton_copiar = ctk.CTkButton(burbuja_frame, text="Copiar", command=copiar_mensaje, width=100, height=30)
+            boton_copiar.pack(padx=10, pady=5, side="right")
+
+        # Empaquetar la burbuja en el panel central con la alineación correspondiente
+        burbuja_frame.pack(anchor=anchor_msg, padx=10, pady=5, fill="x", expand=True)
 
     # Método para usar mensaje_sistema_ayuda
     def generar_mensaje_ayuda(self, codigo_usuario):
