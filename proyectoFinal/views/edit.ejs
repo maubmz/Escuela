@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuario</title>
+    <link rel="stylesheet" href="/styles/edit.css">
+</head>
+<body>
+    <div class="form-container">
+        <h1>Editar Usuario</h1>
+        <form action="/update/<%= user.id %>" method="POST"> <!-- Ruta modificada -->
+            <div>
+                <label for="id">ID:</label>
+                <input type="text" id="id" value="<%= user.id %>" readonly>
+            </div>
+            <div>
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" value="<%= user.nombre %>" required>
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="<%= user.email %>" required>
+            </div>
+            <div>
+                <button type="submit">Actualizar</button>
+                <a href="/">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

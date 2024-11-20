@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+    <link rel="stylesheet" href="/styles/index.css">
+
+</head>
+    
+<body>
+    <h1>Listar usuarios</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Acciones</th>
+            <th>Editar</th>
+        </tr>
+        <% users.forEach(user => { %>
+        <tr>
+            <td><%= user.id %></td>
+            <td><%= user.nombre %></td>
+            <td><%= user.email %></td>
+            <td>
+                <a href="/delete/<%= user.id %>">Eliminar</a>
+            </td>
+            <td>
+                <form action="/edit/<%= user.id %>" method="GET">
+                    <button type="submit">Editar</button>
+                </form>
+            </td>
+        </tr>
+        <% }); %>
+    </table>
+
+    <!-- Botón único para crear usuarios -->
+    <div>
+        <form action="/crear" method="GET">
+            <button type="submit">Crear</button>
+        </form>
+    </div>
+</body>
+</html>
