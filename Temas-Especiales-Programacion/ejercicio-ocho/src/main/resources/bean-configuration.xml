@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- bean definitions here -->
+    <bean id="persona" class="mx.unam.aragon.modelo.Persona"
+            scope="singleton">
+                <property name="nombre" value="Miguel"/>
+                <property name="edad" value="24"/>
+                <property name="direccion" ref="direccion"/>
+    </bean>
+    <bean id="direccion" class="mx.unam.aragon.modelo.Direccion"
+            scope="prototype"/>
+</beans>

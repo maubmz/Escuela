@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- bean definitions here -->
+    <bean id="estudianteDos" class=" mx.unam.aragon.modelo.Estudiante">
+        <property name="nombre" value="Carlos"/>
+        <property name="edad" value="24"/>
+    </bean>
+    <bean id="materia" class=" mx.unam.aragon.modelo.Materia">
+        <property name="nombre" value="Cálculo"/>
+        <property name="creditos" value="10"/>
+    </bean>
+</beans>

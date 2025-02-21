@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+
+    <bean id="datoReporte1" class="mx.unam.aragon.modelo.DatoReporte">
+        <constructor-arg value="1"/>
+        <constructor-arg value="2025-02-21"/>
+    </bean>
+    <bean id="datoReporte2" class="mx.unam.aragon.modelo.DatoReporte">
+        <constructor-arg value="2"/>
+        <constructor-arg value="2025-03-23"/>
+    </bean>
+
+    <bean id="conexionPostgres" class="mx.unam.aragon.modelo.bd.Postgres"/>
+    <bean id="conexionMariaDB" class="mx.unam.aragon.modelo.bd.MariaDB"/>
+    <bean id="conexionOracle" class="mx.unam.aragon.modelo.bd.Oracle"/>
+
+    <bean id="formatoJSON" class="mx.unam.aragon.modelo.formatos.JSON"/>
+    <bean id="formatoCSV" class="mx.unam.aragon.modelo.formatos.CSV"/>
+
+    <bean id="reporte" class="mx.unam.aragon.modelo.Reporte">
+        <property name="conexion" ref="conexionPostgres"/>
+        <property name="formato" ref="formatoJSON"/>
+        <property name="datosReporte">
+            <list>
+                <ref bean="datoReporte1"/>
+                <ref bean="datoReporte2"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>
